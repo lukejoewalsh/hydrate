@@ -5,21 +5,16 @@
 
 <style>
 body{
-  font-family: Arial;
+  font-family:Arial;
   text-align:center;
   margin-top:60px;
   background:#eef6ff;
-}
-
-h1{
-  font-size:42px;
 }
 
 .container{
   display:flex;
   justify-content:center;
   gap:80px;
-  margin-top:40px;
 }
 
 .team{
@@ -38,7 +33,6 @@ h1{
 button{
   font-size:18px;
   padding:10px 20px;
-  cursor:pointer;
 }
 </style>
 
@@ -65,25 +59,32 @@ button{
 
 <script>
 
-const namespace = "water-challenge-2026";
+async function loadCounts(){
+  const res = await fetch("counter.json");
+  const data = await res.json();
 
-function updateCounts(){
-  fetch(`https://api.countapi.xyz/get/${namespace}/teamA`)
-  .then(res => res.json())
-  .then(data => document.getElementById("teamA").innerText = data.value || 0);
-
-  fetch(`https://api.countapi.xyz/get/${namespace}/teamB`)
-  .then(res => res.json())
-  .then(data => document.getElementById("teamB").innerText = data.value || 0);
+  document.getElementById("teamA").innerText = data.teamA;
+  document.getElementById("teamB").innerText = data.teamB;
 }
 
-function add(team){
-  fetch(`https://api.countapi.xyz/hit/${namespace}/${team}`)
-  .then(updateCounts);
+async function add(team){
+
+  await fetch(`https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/dispatches`,{
+    method:"POST",
+    headers:{
+      "Accept":"application/vnd.github+json",
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      event_type:"increment",
+      client_payload:{team:team}
+    })
+  });
+
+  setTimeout(loadCounts,1000);
 }
 
-updateCounts();
-setInterval(updateCounts, 2000);
+loadCounts();
 
 </script>
 
