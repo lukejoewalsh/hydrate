@@ -3,40 +3,38 @@
 <head>
 <title>Water Bottle Challenge</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <style>
 body{
-  font-family:Arial;
-  text-align:center;
-  margin-top:60px;
-  background:#eef6ff;
+font-family:Arial;
+text-align:center;
+margin-top:60px;
+background:#eef6ff;
 }
 
 .container{
-  display:flex;
-  justify-content:center;
-  gap:80px;
+display:flex;
+justify-content:center;
+gap:80px;
 }
 
 .team{
-  background:white;
-  padding:30px;
-  border-radius:10px;
-  width:220px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+background:white;
+padding:30px;
+border-radius:10px;
+width:220px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 .count{
-  font-size:60px;
-  margin:15px;
-}
-
-button{
-  font-size:18px;
-  padding:10px 20px;
+font-size:60px;
+margin:15px;
 }
 </style>
 
 </head>
+
 <body>
 
 <h1>💧 Water Bottle Challenge</h1>
@@ -59,29 +57,37 @@ button{
 
 <script>
 
-async function loadCounts(){
-  const res = await fetch("counter.json");
-  const data = await res.json();
+const supabaseClient = supabase.createClient(
+"YOUR_PROJECT_URL",
+"sb_publishable_xu0ZdnTuT1Wlyx6iSplpaw_k_a6W0KJ"
+);
 
-  document.getElementById("teamA").innerText = data.teamA;
-  document.getElementById("teamB").innerText = data.teamB;
+async function loadCounts(){
+
+let { data } = await supabaseClient
+.from("counter")
+.select("*");
+
+data.forEach(row=>{
+document.getElementById(row.id).innerText = row.value;
+});
+
 }
 
 async function add(team){
 
-  await fetch(`https://api.github.com/repos/lukejoewalsh/hydrate/dispatches`,{
-    method:"POST",
-    headers:{
-      "Accept":"application/vnd.github+json",
-      "Content-Type":"application/json"
-    },
-    body: JSON.stringify({
-      event_type:"increment",
-      client_payload:{team:team}
-    })
-  });
+let { data } = await supabaseClient
+.from("counter")
+.select("value")
+.eq("id",team)
+.single();
 
-  setTimeout(loadCounts,1000);
+await supabaseClient
+.from("counter")
+.update({ value: data.value + 1 })
+.eq("id",team);
+
+loadCounts();
 }
 
 loadCounts();
