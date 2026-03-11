@@ -1,89 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Water Bottle Challenge</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<title>Water Bottle Challenge</title>
 
-  <style>
-    body{
-      font-family: Arial;
-      text-align:center;
-      margin-top:50px;
-      background:#f0f8ff;
-    }
+<style>
+body{
+  font-family: Arial;
+  text-align:center;
+  margin-top:60px;
+  background:#eef6ff;
+}
 
-    h1{font-size:40px}
+h1{
+  font-size:42px;
+}
 
-    .team{
-      margin:40px;
-      padding:20px;
-      border-radius:10px;
-      background:white;
-      display:inline-block;
-      width:250px;
-      box-shadow:0 0 10px rgba(0,0,0,0.1);
-    }
+.container{
+  display:flex;
+  justify-content:center;
+  gap:80px;
+  margin-top:40px;
+}
 
-    button{
-      font-size:20px;
-      padding:10px 20px;
-      margin-top:10px;
-      cursor:pointer;
-    }
+.team{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  width:220px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .count{
-      font-size:50px;
-      margin:10px;
-    }
-  </style>
+.count{
+  font-size:60px;
+  margin:15px;
+}
+
+button{
+  font-size:18px;
+  padding:10px 20px;
+  cursor:pointer;
+}
+</style>
+
 </head>
-
 <body>
 
-<h1>Water Bottle Challenge 💧</h1>
+<h1>💧 Water Bottle Challenge</h1>
+
+<div class="container">
 
 <div class="team">
 <h2>Team A</h2>
 <div id="teamA" class="count">0</div>
-<button onclick="addWater('teamA')">+1 Bottle</button>
+<button onclick="add('teamA')">+1 Bottle</button>
 </div>
 
 <div class="team">
 <h2>Team B</h2>
 <div id="teamB" class="count">0</div>
-<button onclick="addWater('teamB')">+1 Bottle</button>
+<button onclick="add('teamB')">+1 Bottle</button>
+</div>
+
 </div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-};
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const namespace = "water-challenge-2026";
 
-const teamARef = db.ref("teamA");
-const teamBRef = db.ref("teamB");
+function updateCounts(){
+  fetch(`https://api.countapi.xyz/get/${namespace}/teamA`)
+  .then(res => res.json())
+  .then(data => document.getElementById("teamA").innerText = data.value || 0);
 
-teamARef.on("value", snap=>{
-  document.getElementById("teamA").innerText = snap.val() || 0;
-});
-
-teamBRef.on("value", snap=>{
-  document.getElementById("teamB").innerText = snap.val() || 0;
-});
-
-function addWater(team){
-  const ref = db.ref(team);
-
-  ref.transaction(current=>{
-    return (current || 0) + 1;
-  });
+  fetch(`https://api.countapi.xyz/get/${namespace}/teamB`)
+  .then(res => res.json())
+  .then(data => document.getElementById("teamB").innerText = data.value || 0);
 }
+
+function add(team){
+  fetch(`https://api.countapi.xyz/hit/${namespace}/${team}`)
+  .then(updateCounts);
+}
+
+updateCounts();
+setInterval(updateCounts, 2000);
+
 </script>
 
 </body>
