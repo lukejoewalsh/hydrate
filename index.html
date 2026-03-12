@@ -93,6 +93,11 @@
 
 <script>
 
+const supabaseClient = supabase.createClient(
+"https://elifeaqvnllmuogdwtuy.supabase.co",
+"sb_publishable_xu0ZdnTuT1Wlyx6iSplpaw_k_a6W0KJ"
+);
+
 const drinkWords = [
 "slurped",
 "gulped",
@@ -100,11 +105,6 @@ const drinkWords = [
 "chugged",
 "swigged"
 ];
-
-const supabaseClient = supabase.createClient(
-"https://elifeaqvnllmuogdwtuy.supabase.co",
-"sb_publishable_xu0ZdnTuT1Wlyx6iSplpaw_k_a6W0KJ"
-);
 
 async function loadCounts() {
   let { data } = await supabaseClient.from("counter").select("*");
