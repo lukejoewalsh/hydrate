@@ -133,7 +133,7 @@ async function add(team){
 
   let { data } = await supabaseClient
   .from("counter")
-  .select("*")
+  .select("id,value,last_player,last_time");
   .eq("id",team)
   .single();
 
