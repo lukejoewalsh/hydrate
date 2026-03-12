@@ -67,6 +67,8 @@
 
 <h1>💧 Water Bottle Challenge</h1>
 
+<div id="activity" style="margin-bottom:20px;font-size:20px;color:#444;"></div>
+
 <div class="container">
 
 <div class="team">
@@ -90,6 +92,14 @@
 </div>
 
 <script>
+
+const drinkWords = [
+"slurped",
+"gulped",
+"guzzled",
+"chugged",
+"swigged"
+];
 
 const supabaseClient = supabase.createClient(
 "https://elifeaqvnllmuogdwtuy.supabase.co",
@@ -115,21 +125,48 @@ async function loadCounts() {
 
 async function add(team){
 
-let { data } = await supabaseClient
-.from("counter")
-.select("value")
-.eq("id",team)
-.single();
-
-await supabaseClient
-.from("counter")
-.update({ value: data.value + 1 })
-.eq("id",team);
-
-loadCounts();
+    let player = prompt("Enter your name to confirm you drank a full 16 oz bottle:");
+    
+    if(!player) return;
+        
+    let { data } = await supabaseClient
+    .from("counter")
+    .select("value")
+    .eq("id",team)
+    .single();
+    
+    let newValue = data.value + 1;
+    let time = new Date().toISOString();
+    
+    await supabaseClient
+    .from("counter")
+    .update({
+        value:newValue,
+        last_player:player,
+        last_time:time
+    })
+    .eq("id",team);
+    
+    loadCounts();
 }
 
 loadCounts();
+
+let latest = data
+  .filter(row => row.last_time)
+  .sort((a,b)=> new Date(b.last_time) - new Date(a.last_time))[0];
+
+if(latest){
+  let word = drinkWords[Math.floor(Math.random()*drinkWords.length)];
+
+  let time = new Date(latest.last_time).toLocaleTimeString([],{
+    hour:'numeric',
+    minute:'2-digit'
+  });
+
+  document.getElementById("activity").innerText =
+    `${latest.last_player} ${word} at ${time}`;
+}
 
 </script>
 
