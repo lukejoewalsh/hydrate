@@ -3,6 +3,8 @@
 <head>
 <title>Water Bottle Challenge</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -18,15 +20,17 @@
     .container {
       display: flex;
       justify-content: center;
-      gap: 80px;
+      gap: 30px;
+      flex-wrap: wrap;   /* allows stacking on phones */
+      padding: 20px;
     }
 
     .team {
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      width: 220px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 25px;
+      border-radius: 15px;
+      width: min(90vw, 350px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     .count {
