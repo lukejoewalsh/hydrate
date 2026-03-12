@@ -121,6 +121,22 @@ async function loadCounts() {
       bar.style.width = percent + "%";
     }
   });
+
+    let latest = data
+      .filter(row => row.last_time)
+      .sort((a,b)=> new Date(b.last_time) - new Date(a.last_time))[0];
+    
+    if(latest){
+      let word = drinkWords[Math.floor(Math.random()*drinkWords.length)];
+    
+      let time = new Date(latest.last_time).toLocaleTimeString([],{
+        hour:'numeric',
+        minute:'2-digit'
+      });
+    
+      document.getElementById("activity").innerText =
+        `${latest.last_player} ${word} at ${time}`;
+    }
 }
 
 async function add(team){
@@ -153,22 +169,6 @@ async function add(team){
 }
 
 loadCounts();
-
-let latest = data
-  .filter(row => row.last_time)
-  .sort((a,b)=> new Date(b.last_time) - new Date(a.last_time))[0];
-
-if(latest){
-  let word = drinkWords[Math.floor(Math.random()*drinkWords.length)];
-
-  let time = new Date(latest.last_time).toLocaleTimeString([],{
-    hour:'numeric',
-    minute:'2-digit'
-  });
-
-  document.getElementById("activity").innerText =
-    `${latest.last_player} ${word} at ${time}`;
-}
 
 </script>
 
