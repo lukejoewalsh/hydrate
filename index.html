@@ -108,6 +108,8 @@ const supabaseClient = supabase.createClient(
 
 async function loadCounts() {
   let { data } = await supabaseClient.from("counter").select("*");
+
+    console.log(data);
   
   let total = data.reduce((sum, row) => sum + row.value, 0) || 1; // avoid division by 0
   
