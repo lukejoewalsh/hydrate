@@ -125,29 +125,31 @@ async function loadCounts() {
 
 async function add(team){
 
-    let player = prompt("Enter your name to confirm you drank a full 16 oz bottle:");
-    
-    if(!player) return;
-        
-    let { data } = await supabaseClient
-    .from("counter")
-    .select("value")
-    .eq("id",team)
-    .single();
-    
-    let newValue = data.value + 1;
-    let time = new Date().toISOString();
-    
-    await supabaseClient
-    .from("counter")
-    .update({
-        value:newValue,
-        last_player:player,
-        last_time:time
-    })
-    .eq("id",team);
-    
-    loadCounts();
+  let player = prompt("Enter your name to confirm you drank a full 16 oz bottle:");
+
+  if(!player || player.trim() === ""){
+    return; // user cancelled or entered nothing
+  }
+
+  let { data } = await supabaseClient
+  .from("counter")
+  .select("*")
+  .eq("id",team)
+  .single();
+
+  let newValue = data.value + 1;
+  let time = new Date().toISOString();
+
+  await supabaseClient
+  .from("counter")
+  .update({
+    value:newValue,
+    last_player:player,
+    last_time:time
+  })
+  .eq("id",team);
+
+  loadCounts();
 }
 
 loadCounts();
